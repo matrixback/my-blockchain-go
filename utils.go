@@ -15,3 +15,8 @@ func IntToHex(num int64) []byte {
 
 	return buff.Bytes()
 }
+
+
+func IsByteEmpty(b []byte) bool {
+	return len(b) == 0
+}
