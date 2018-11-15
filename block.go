@@ -29,6 +29,7 @@ func (b *Block) SetHash() {
 	b.Hash = hash[:]
 }
 
+// 创建一个块的时候计算 pow
 func NewBlock(data string, PrevBlockHash []byte) *Block {
 	block := &Block{
 		time.Now().Unix(),

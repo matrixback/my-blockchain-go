@@ -54,3 +54,7 @@ conclude: byte 修改起来比较灵活，string 可看做是 const 语义。
 
         return buff.Bytes()
     }
+
+3. boltDB
+
+主要以 byte 为类型。创建 bucket 也是。
