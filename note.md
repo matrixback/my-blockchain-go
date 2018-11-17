@@ -1,3 +1,5 @@
+# go 笔记
+
 1. []byte
 
 go 的 byte 是什么类型？字符类型？
@@ -58,3 +60,10 @@ conclude: byte 修改起来比较灵活，string 可看做是 const 语义。
 3. boltDB
 
 主要以 byte 为类型。创建 bucket 也是。
+
+4. byte 变为可读
+
+一个 byte 数组应该是一个 uint8 类型，即一个字符。
+在有些情况下，显示时不友好，用 16 进制编码为人类可读。也可用base64等。
+
+    txID := hex.EncodeToString(tx.ID)

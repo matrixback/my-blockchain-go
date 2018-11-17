@@ -20,3 +20,9 @@ func IntToHex(num int64) []byte {
 func IsByteEmpty(b []byte) bool {
 	return len(b) == 0
 }
+
+func NilPanic(err error) {
+	if err != nil {
+		log.Panic(err)
+	}
+}

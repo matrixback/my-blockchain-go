@@ -2,38 +2,25 @@ package main
 
 import (
 	"time"
-	"crypto/sha256"
-	"strconv"
 	"bytes"
 	"encoding/gob"
 	"log"
+	"crypto/sha256"
 )
 
 type Block struct {
 	Timestamp 		int64
-	Data			[]byte
+	Transactions    []*Transaction
 	PrevBlockHash	[]byte
 	Hash			[]byte
 	Nonce 			int
 }
 
-func (b *Block) SetHash() {
-	timestamp := []byte(strconv.FormatInt(b.Timestamp, 10))
-	headers := bytes.Join([][]byte{
-		b.PrevBlockHash,
-		b.Data,
-		timestamp},
-		[]byte{})
-	hash := sha256.Sum256(headers)
-
-	b.Hash = hash[:]
-}
-
 // 创建一个块的时候计算 pow
-func NewBlock(data string, PrevBlockHash []byte) *Block {
+func NewBlock(transactions []*Transaction, PrevBlockHash []byte) *Block {
 	block := &Block{
 		time.Now().Unix(),
-		[]byte(data),
+		transactions,
 		PrevBlockHash,
 		[]byte{},
 		0,
@@ -48,8 +35,8 @@ func NewBlock(data string, PrevBlockHash []byte) *Block {
 	return block
 }
 
-func NewGenesisBlock() *Block {
-	return NewBlock("Genesis Block", []byte{})
+func NewGenesisBlock(coinbase *Transaction) *Block {
+	return NewBlock([]*Transaction{coinbase}, []byte{})
 }
 
 func (b *Block) Serialize() []byte {
@@ -69,9 +56,19 @@ func DeserializeBlock(d []byte) *Block {
 	// gob 解码时需要一个可读对象，通过 bytes.NewReader 转换一次
 	decoder := gob.NewDecoder(bytes.NewReader(d))
 	err := decoder.Decode(&block)
-	if err != nil {
-		log.Panic(err)
-	}
-
+	NilPanic(err)
 	return &block
+}
+
+// 在Pow 中把所有交易的hash取出来
+func (b *Block) HashTransactions() []byte {
+	var txHashes [][]byte
+	var txHash [32]byte
+
+	for _, tx := range b.Transactions {
+		txHashes = append(txHashes, tx.ID)
+	}
+	txHash = sha256.Sum256(bytes.Join(txHashes, []byte{}))
+
+	return txHash[:]
 }
