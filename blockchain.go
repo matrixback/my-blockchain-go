@@ -163,6 +163,8 @@ func (bc *Blockchain) FindUnspentTransactions(address string) []Transaction {
 			txID := hex.EncodeToString(tx.ID)
 
 		Outputs:
+			// 此处有问题，因为一个 txout 只可能有一个address的值，所以两次循环遍历即可
+			// Vout = [v1, v2, v3] 其中 v1, v2, v3 不可能是一个地址的
 			for outIdx, out := range tx.Vout {
 				if spentTXOs[txID] != nil {
 					for _, spentOut := range spentTXOs[txID] {
